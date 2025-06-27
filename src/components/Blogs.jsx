@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { blogCategories } from '../assets/assets'
+import { blog_data, blogCategories } from '../assets/assets'
 import { motion } from 'motion/react';
+import BlogCard from './BlogCard';
 
-const Blog = () => {
+const Blogs = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
 
     return (
@@ -22,11 +23,16 @@ const Blog = () => {
                         </button>
                     </div>
                 ))}
+            </div>
 
-                {/* Blog Cards */}
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40 px-4 sm:px-8'>
+                {blog_data.filter((blog) => selectedCategory === 'All' || blog.category === selectedCategory)
+                    .map((blog) => (
+                        <BlogCard key={blog._id} blog={blog} />
+                    ))}
             </div>
         </div>
     )
 }
 
-export default Blog
+export default Blogs

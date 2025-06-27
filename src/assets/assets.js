@@ -180,7 +180,7 @@ export const blog_data = [
         "updatedAt": "2025-04-29T10:14:58.575Z",
         "__v": 0,
         "subTitle": "Navigating the Future Responsibly"
-    }
+    },
 ]
 
 export const comments_data = [
