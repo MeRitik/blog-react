@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 
 import { assets, blog_data, comments_data } from '../assets/assets'
 
 import Header from '../components/Header'
+import Footer from '../components/Footer'
+import Loader from '../components/Loader'
 
 const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -14,6 +16,9 @@ const Blog = () => {
     const blogId = useParams();
     const [data, setData] = React.useState(null);
     const [comments, setComments] = React.useState([]);
+
+    const [name, setName] = useState('');
+    const [comment, setComment] = useState('');
 
 
 
@@ -81,23 +86,45 @@ const Blog = () => {
                                 </div>))}
                         </div>
                     </div>
-                    {/* Comment Section */}
+
+                    {/* Form Section */}
                     <div className='max-w-3xl mx-auto'>
                         <p className='font-semibold mb-4'>Add you comment</p>
-                        <form onSubmit={() => { }} className='flex flex-col items-start gap-4 max-w-lg'>
-                            <input type="text" placeholder='Name' required className='w-full p-2 border border-accent rounded outline-none' />
+                        <form
+                            onSubmit={() => { }}
+                            className='flex flex-col items-start gap-4 max-w-lg'>
+                            <input
+                                type="text"
+                                placeholder='Name'
+                                className='w-full p-2 border border-accent rounded outline-none'
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
 
-                            <textarea placeholder='Comment' className='w-full p-2 border border-accent rounded outline-none h-48'></textarea>
+                            <textarea
+                                placeholder='Comment'
+                                className='w-full p-2 border border-accent rounded outline-none h-48'
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                            ></textarea>
 
                             <button type='submit' className='bg-primary text-primary-foreground rounded p-2 px-8 hover:scale-102 transition-all cursor-pointer'>Submit</button>
-
-                        </form>
-
+                            ̥                        </form>
                     </div>
 
+                    <div className='mb-8'>
+                        <p>Share this article on social media</p>
+                        <div className="flex">
+                            <img src={assets.facebook_icon} alt="facebook_icon" />
+                            <img src={assets.twitter_icon} alt="twitter_icon" />
+                            <img src={assets.googleplus_icon} alt="googleplus_icon" />
+                        </div>
+                    </div>
                 </div>
+                <Footer />
             </div>
-        ) : (<p>Loading...</p>)
+        ) : (<Loader />)
     )
 }
 
