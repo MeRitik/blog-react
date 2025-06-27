@@ -2,7 +2,7 @@ import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import AppLayout from './components/AppLayout';
 import Error from './components/Error';
-import Home from './pages/Home';
+import Home from './pages/Hero';
 import Blog from './pages/Blog';
 import Admin from './pages/Admin';
 
