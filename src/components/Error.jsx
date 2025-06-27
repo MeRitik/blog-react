@@ -1,12 +1,17 @@
+import { Link, useRouteError } from 'react-router';
+
+
 function Error() {
+    const error = useRouteError();
 
     return (
         <div>
             <h1>Something went wrong 😢</h1>
+            <p>{error.data || error.message}</p>
 
-            <button to="-1">
+            <Link to="-1">
                 &larr; Go back
-            </button>
+            </Link>
         </div>
     );
 }
