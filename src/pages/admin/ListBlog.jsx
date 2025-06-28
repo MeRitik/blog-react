@@ -14,7 +14,7 @@ const ListBlog = () => {
     }, []);
 
     return (
-        <div className='flex-1 pt-5 px-6 sm:pt-12 sm:pl-16 bg-accent'>
+        <div className='flex-1 pt-5 px-6 sm:pt-12 sm:pl-16 bg-accent/30'>
             <h1 className='text-2xl font-bold mb-4 text-foreground'>All Blogs</h1>
 
             <div className='relative h-4/5 max-w-4xl overflow-x-auto shadow rounded-lg no-scrollbar bg-accent'>
