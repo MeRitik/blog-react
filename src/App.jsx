@@ -10,6 +10,8 @@ import Comments from './pages/admin/Comments';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from './components/admin/Login';
 
+import 'quill/dist/quill.snow.css';
+
 const isAuthenticated = true
 
 const router = createBrowserRouter([
