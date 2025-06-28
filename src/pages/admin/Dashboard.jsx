@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { assets, dashboard_data } from '../../assets/assets'
+import BlogTableItem from '../../components/admin/BlogTableItem';
 
 const Dashboard = () => {
 
@@ -55,6 +56,26 @@ const Dashboard = () => {
                 <div className='flex items-center gap-3 m-4 mt-6 text-foreground'>
                     <img src={assets.dashboard_icon_4} />
                     <h1>Recent Blogs</h1>
+                </div>
+
+                <div className='relative max-w-4xl overflow-x-auto shadow rounded-lg no-scrollbar bg-accent'>
+                    <table className='w-full text-sm text-foreground bg-card'>
+                        <thead className='text-xs uppercase bg-card text-left'>
+                            <tr>
+                                <th scope="col" className='px-2 py-4 xl:px-6'>#</th>
+                                <th scope="col" className='px-2 py-4'>Blog Title</th>
+                                <th scope="col" className='px-2 py-4 max-sm:hidden'>Date</th>
+                                <th scope="col" className='px-2 py-4 max-sm:hidden'>Status</th>
+                                <th scope="col" className='px-2 py-4'>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dashboardData.recentBlogs.map((blog, index) => (
+                                <BlogTableItem key={blog._id} blog={blog} fetchBlogs={() => { }} index={index + 1} />
+                            ))}
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
 
