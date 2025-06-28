@@ -1,9 +1,16 @@
-import { createBrowserRouter, RouterProvider } from 'react-router'
 import Error from './components/Error';
-import Admin from './pages/Admin';
 import Blogs from './components/Blogs';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
+import Layout from './pages/admin/Layout';
+import Dashboard from './pages/admin/Dashboard';
+import AddBlog from './pages/admin/AddBlog';
+import ListBlog from './pages/admin/ListBlog';
+import Comments from './pages/admin/Comments';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Login from './components/admin/Login';
+
+const isAuthenticated = true
 
 const router = createBrowserRouter([
   {
@@ -22,9 +29,31 @@ const router = createBrowserRouter([
         element: <Blog />
       },
       {
+        path: '/login',
+        element: <Login />
+      },
+      {
         path: '/admin',
-        element: <Admin />
-      }
+        element: (isAuthenticated ? <Layout /> : <Login />),
+        children: [
+          {
+            index: true,
+            element: <Dashboard />
+          },
+          {
+            path: 'add-blog',
+            element: <AddBlog />
+          },
+          {
+            path: 'list-blog',
+            element: <ListBlog />
+          },
+          {
+            path: 'comments',
+            element: <Comments />
+          },
+        ],
+      },
     ]
   }
 ]);
