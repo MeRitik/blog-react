@@ -11,11 +11,11 @@ const Dashboard = () => {
         recentBlogs: [],
     });
 
-    useEffect(() => {
-        async function fetchDashboardData() {
-            setDashboardData(dashboard_data);
-        }
+    async function fetchDashboardData() {
+        setDashboardData(dashboard_data);
+    }
 
+    useEffect(() => {
         fetchDashboardData();
     }, []);
 
@@ -71,7 +71,7 @@ const Dashboard = () => {
                         </thead>
                         <tbody>
                             {dashboardData.recentBlogs.map((blog, index) => (
-                                <BlogTableItem key={blog._id} blog={blog} fetchBlogs={() => { }} index={index + 1} />
+                                <BlogTableItem key={blog._id} blog={blog} fetchBlogs={fetchDashboardData} index={index + 1} />
                             ))}
                         </tbody>
                     </table>
