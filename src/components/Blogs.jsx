@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { blog_data, blogCategories } from '../assets/assets'
+import { blogCategories } from '../assets/assets'
 import { motion } from 'motion/react';
 import BlogCard from './BlogCard';
 import { useAppContext } from '../context/AppContext';
@@ -9,12 +9,15 @@ const Blogs = () => {
     const { blogs, input } = useAppContext();
     const { posts } = blogs;
 
+    console.log(input);
+
+
 
     function filteredBlogs() {
         if (input === '')
             return posts;
 
-        return posts.filter((blog) => blog.title.toLowerCase().includes(input.toLowerCase()) || blog.category.toLowerCase().includes(input.toLowerCase()));
+        return posts.filter((blog) => blog.title.toLowerCase().includes(input.toLowerCase()) || blog.category.title.toLowerCase().includes(input.toLowerCase()));
     }
 
     return (
