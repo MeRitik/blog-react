@@ -1,12 +1,32 @@
-import React from 'react'
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useAppContext } from '../../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
-    function handleSubmit(event) {
+    const { axios, setToken } = useAppContext();
+    const navigate = useNavigate();
+
+    async function handleSubmit(event) {
         event.preventDefault();
-        // Handle login logic here
+
+        try {
+            const { data } = await axios.post('api/v1/auth/login', { username, password });
+            if (data.success) {
+                setToken(data.token);
+                localStorage.setItem("token", data.token);
+                axios.defaults.headers.common['Authorization'] = data.token;
+                toast.success('Login successful');
+                navigate('/admin');
+            } else {
+                toast.error(data.message);
+            }
+        } catch (e) {
+            toast.error(e.message)
+        }
     }
 
     return (
@@ -21,8 +41,8 @@ const Login = () => {
                         <input
                             type="email"
                             placeholder="Username"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             className='w-full p-2 border border-accent rounded-md mb-4 text-foreground'
                         />
 

@@ -2,7 +2,6 @@ import Error from './components/Error';
 import Blogs from './components/Blogs';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
-import Layout from './pages/admin/Layout';
 import Dashboard from './pages/admin/Dashboard';
 import AddBlog from './pages/admin/AddBlog';
 import ListBlog from './pages/admin/ListBlog';
@@ -11,8 +10,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from './components/admin/Login';
 
 import 'quill/dist/quill.snow.css';
-
-const isAuthenticated = true
+import RequireAuth from './components/RequireAuth';
 
 const router = createBrowserRouter([
   {
@@ -36,7 +34,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/admin',
-        element: (isAuthenticated ? <Layout /> : <Login />),
+        element: <RequireAuth />,
         children: [
           {
             index: true,
@@ -61,6 +59,7 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
+
   return (
     <RouterProvider router={router} />
   )
