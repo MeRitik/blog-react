@@ -9,10 +9,6 @@ const Blogs = () => {
     const { blogs, input } = useAppContext();
     const { posts } = blogs;
 
-    console.log(input);
-
-
-
     function filteredBlogs() {
         if (input === '')
             return posts;

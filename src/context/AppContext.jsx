@@ -40,13 +40,16 @@ export const AppProvider = ({ children }) => {
 
 
     useEffect(() => {
-        fetchBlogs();
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
         if (token) {
             setToken(token);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         }
-    }, [token])
+
+        fetchBlogs();
+    }, []);
 
     const value = {
         axios,

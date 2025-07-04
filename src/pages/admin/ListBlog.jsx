@@ -1,17 +1,32 @@
-import React, { useEffect } from 'react'
-import { blog_data, dashboard_data } from '../../assets/assets'
+import React, { useEffect, useState } from 'react'
 import BlogTableItem from '../../components/admin/BlogTableItem';
+import { useAppContext } from '../../context/AppContext';
+import toast from 'react-hot-toast';
 
 const ListBlog = () => {
-    const [blogs, setBlogs] = React.useState([])
+    const [blogs, setBlogs] = useState([]);
 
-    async function fetchBlogs() {
-        setBlogs(blog_data);
+    const { axios, userId, setUserId } = useAppContext();
+
+    const fetchBlogs = async () => {
+        try {
+            const response = await axios.get(`/api/user/${userId}/posts`);
+            setBlogs(response.data);
+            console.log(response.data);
+
+        } catch (error) {
+            toast.error("Error fetching blogs:", error);
+
+        }
     }
 
     useEffect(() => {
+        if (!userId) {
+            setUserId(localStorage.getItem("userId"));
+        }
+
         fetchBlogs();
-    }, []);
+    }, [userId, setUserId, axios]);
 
     return (
         <div className='flex-1 pt-5 px-6 sm:pt-12 sm:pl-16 bg-accent/30'>
