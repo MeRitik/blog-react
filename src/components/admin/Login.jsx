@@ -7,7 +7,7 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const { axios, setToken } = useAppContext();
+    const { axios, setToken, setUserId } = useAppContext();
     const navigate = useNavigate();
 
     async function handleSubmit(event) {
@@ -18,8 +18,11 @@ const Login = () => {
             if (data.success) {
                 setToken(data.token);
                 localStorage.setItem("token", data.token);
-                axios.defaults.headers.common['Authorization'] = data.token;
+                setUserId(data.userId);
+                localStorage.setItem("userId", data.userId);
                 toast.success('Login successful');
+                console.log(data);
+
                 navigate('/admin');
             } else {
                 toast.error(data.message);

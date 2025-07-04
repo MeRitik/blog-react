@@ -1,17 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { assets, blogCategories } from '../../assets/assets'
+import { useAppContext } from '../../context/AppContext'
 
 import Quill from 'quill';
+import toast from 'react-hot-toast';
 
 const AddBlog = () => {
     const [image, setImage] = useState(false);
     const [title, setTitle] = useState('');
     const [subtitle, setSubtitle] = useState('');
     const [category, setCategory] = useState('');
-    const [published, setPublished] = useState(false);
+    const [isPublished, setPublished] = useState(false);
 
     const editorRef = useRef(null);
     const quillRef = useRef(null);
+
+    const { axios } = useAppContext();
+
 
     function generateContent() {
         return "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
@@ -20,13 +25,39 @@ const AddBlog = () => {
     async function onSubmitHandler(e) {
         e.preventDefault();
 
-        console.log({
-            image,
-            title,
-            subtitle,
-            category,
-            published
-        });
+        if (!title || !subtitle || !category) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('subtitle', subtitle);
+        formData.append('content', quillRef.current.getText());
+        formData.append('image', image);
+        formData.append('isPublished', isPublished);
+
+
+        // /user/{userId}/category/{categoryId}/posts
+        try {
+            const res = await axios.post(`/api/v2/user/${localStorage.getItem("userId")}/category/9/posts`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            console.log(res.data);
+            if (res.data.id) {
+                toast.success('Blog added successfully!');
+                setImage(false);
+                setTitle('');
+                setSubtitle('');
+                setCategory('');
+                quillRef.current.setText('');
+            }
+        } catch (error) {
+            console.error('Error adding blog:', error);
+            toast.error('An error occurred while adding the blog.');
+        }
     }
 
     useEffect(() => {
@@ -73,7 +104,7 @@ const AddBlog = () => {
 
                 <div className='flex items-center gap-2 mt-4'>
                     <p>Publish Now</p>
-                    <input type="checkbox" className='cursor-pointer scale-125' checked={published} onChange={e => setPublished(e.target.checked)} />
+                    <input type="checkbox" className='cursor-pointer scale-125' checked={isPublished} onChange={e => setPublished(e.target.checked)} />
                 </div>
 
                 <button type='submit' className='mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-sm cursor-pointer hover:bg-primary/90 transition-all'>Add Blog</button>

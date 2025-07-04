@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 
-import { assets, blog_data, comments_data } from '../assets/assets'
+import { assets } from '../assets/assets'
 
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Loader from '../components/Loader'
+import { useAppContext } from '../context/AppContext'
 
-const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
-}
+const VITE_CLOUDINARY_URL_PREFIX = import.meta.env.VITE_CLOUDINARY_URL_PREFIX;
+
+// const formatDate = (dateString) => {
+//     const options = { year: 'numeric', month: 'long', day: 'numeric' };
+//     return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
+// }
 
 const Blog = () => {
     const blogId = useParams();
@@ -20,34 +23,30 @@ const Blog = () => {
     const [name, setName] = useState('');
     const [comment, setComment] = useState('');
 
-
+    const { axios } = useAppContext();
 
     useEffect(() => {
         async function fetchBlogData() {
-            const found = blog_data.find(item => item._id === blogId.id);
-            if (found) {
-                setData(found);
-            } else {
-                console.error("Blog not found");
+            try {
+                const response = await axios.get(`api/posts/${blogId.id}`)
+                console.log(response);
+
+                if (response.status === 200) {
+                    setData(response.data);
+                    setComments(response.data.comments || []);
+                    setName(response.data.author.name)
+                }
+
+
+
+            } catch (e) {
+                console.error(e);
             }
         }
 
         fetchBlogData();
 
-    }, [blogId]);
-
-    useEffect(() => {
-        async function fetchComments() {
-            // const response = comments_data.filter(item => item.blog === data)
-            const response = comments_data;
-            setComments(response || []);
-            console.log("Comments fetched:", response.length);
-
-        }
-
-        fetchComments();
-
-    }, [data]);
+    }, [blogId, axios]);
 
     return (
         data ? (
@@ -57,16 +56,16 @@ const Blog = () => {
                 <Header />
 
                 <div className='text-center mt-20 text-foreground'>
-                    <p>Published on {formatDate(data.createdAt)}</p>
+                    <p>Published on {data.date}</p>
                     <h1 className='text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-foreground'>{data.title}</h1>
                     <h2 className='my-5 max-w-lg truncate mx-auto'>{data.subTitle}</h2>
-                    <p className='inline-block py-1 px-4 rounded-full mb-6 border text-sm border-primary/35 bg-primary/5 font-medium text-primary'>Jason Bourne</p>
+                    <p className='inline-block py-1 px-4 rounded-full mb-6 border text-sm border-primary/35 bg-primary/5 font-medium text-primary'>{name}</p>
                 </div>
 
                 <div className='max-w-3xl mx-auto px-4 sm:px-0'>
-                    <img src={data.image} alt='blog image' className='w-full h-auto rounded-2xl shadow-md mb-5' />
+                    <img src={`${VITE_CLOUDINARY_URL_PREFIX}${data.image}`} alt='blog image' className='w-full h-auto rounded-2xl shadow-md mb-5' />
                     <div
-                        dangerouslySetInnerHTML={{ __html: data.description }}
+                        dangerouslySetInnerHTML={{ __html: data.content }}
                         className='rich-text max-w-3xl mx-auto'
                     ></div>
 
@@ -81,8 +80,8 @@ const Blog = () => {
                                         <img src={assets.user_icon} className='w-6' />
                                         <p className='font-medium'>{comment.name}</p>
                                     </div>
-                                    <p>{comment.content}</p>
-                                    <span className='absolute right-4 bottom-3 flex items-center gap-2 text-xs'>{formatDate(comment.createdAt)}</span>
+                                    <p>{comment.comment}</p>
+                                    <span className='absolute right-4 bottom-3 flex items-center gap-2 text-xs'>{comment.createdAt}</span>
                                 </div>))}
                         </div>
                     </div>
@@ -110,7 +109,7 @@ const Blog = () => {
                             ></textarea>
 
                             <button type='submit' className='bg-primary text-primary-foreground rounded p-2 px-8 hover:scale-102 transition-all cursor-pointer'>Submit</button>
-                            ̥                        </form>
+                        </form>
                     </div>
 
                     <div className='mb-8'>

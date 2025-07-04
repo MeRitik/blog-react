@@ -2,7 +2,6 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const AppContext = createContext();
@@ -19,6 +18,7 @@ const initialBlogsData = {
 export const AppProvider = ({ children }) => {
 
     const [token, setToken] = useState(null);
+    const [userId, setUserId] = useState(null);
     const [blogs, setBlogs] = useState(initialBlogsData);
     const [input, setInput] = useState('');
     const [error, setError] = useState(null);
@@ -46,7 +46,7 @@ export const AppProvider = ({ children }) => {
             setToken(token);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         }
-    }, [])
+    }, [token])
 
     const value = {
         axios,
@@ -58,6 +58,8 @@ export const AppProvider = ({ children }) => {
         setInput,
         error,
         setError,
+        userId,
+        setUserId,
     }
 
     return (
