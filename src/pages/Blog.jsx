@@ -11,10 +11,10 @@ import toast from 'react-hot-toast'
 
 const VITE_CLOUDINARY_URL_PREFIX = import.meta.env.VITE_CLOUDINARY_URL_PREFIX;
 
-// const formatDate = (dateString) => {
-//     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-//     return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
-// }
+const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
+}
 
 const Blog = () => {
     const blogId = useParams();
@@ -53,10 +53,17 @@ const Blog = () => {
     async function handleCommentSubmit(e) {
         e.preventDefault();
 
+        if (comment === '' || name === '') {
+            toast.error('Please fill in both name and comment');
+            console.error('Name or comment is empty');
+            return;
+        }
+
         const commentResponseData = {
             comment,
             isApproved: false,
             author: name,
+            createdAt: formatDate(new Date().toISOString())
         }
 
         try {
@@ -104,7 +111,7 @@ const Blog = () => {
                                         <p className='font-medium'>{comment.author}</p>
                                     </div>
                                     <p>{comment.comment}</p>
-                                    <span className='absolute right-4 bottom-3 flex items-center gap-2 text-xs'>{comment.createdAt}</span>
+                                    <span className='absolute right-4 bottom-3 flex items-center gap-2 text-xs'>{formatDate(comment.createdAt)}</span>
                                 </div>))}
                         </div>
                     </div>

@@ -11,6 +11,7 @@ const AddBlog = () => {
     const [subtitle, setSubtitle] = useState('');
     const [category, setCategory] = useState('');
     const [isPublished, setPublished] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
 
     const editorRef = useRef(null);
     const quillRef = useRef(null);
@@ -28,6 +29,8 @@ const AddBlog = () => {
         if (!title || !subtitle || !category) {
             return;
         }
+
+        setIsAdding(true);
 
         const formData = new FormData();
         formData.append('title', title);
@@ -58,6 +61,8 @@ const AddBlog = () => {
             console.error('Error adding blog:', error);
             toast.error('An error occurred while adding the blog.');
         }
+
+        setIsAdding(false);
     }
 
     useEffect(() => {
@@ -107,7 +112,7 @@ const AddBlog = () => {
                     <input type="checkbox" className='cursor-pointer scale-125' checked={isPublished} onChange={e => setPublished(e.target.checked)} />
                 </div>
 
-                <button type='submit' className='mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-sm cursor-pointer hover:bg-primary/90 transition-all'>Add Blog</button>
+                <button type='submit' className='mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-sm cursor-pointer hover:bg-primary/90 transition-all'>{isAdding ? 'Adding...' : 'Add Blog'}</button>
             </div>
         </form>
     )
