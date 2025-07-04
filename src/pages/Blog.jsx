@@ -7,6 +7,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Loader from '../components/Loader'
 import { useAppContext } from '../context/AppContext'
+import toast from 'react-hot-toast'
 
 const VITE_CLOUDINARY_URL_PREFIX = import.meta.env.VITE_CLOUDINARY_URL_PREFIX;
 
@@ -17,13 +18,16 @@ const VITE_CLOUDINARY_URL_PREFIX = import.meta.env.VITE_CLOUDINARY_URL_PREFIX;
 
 const Blog = () => {
     const blogId = useParams();
-    const [data, setData] = React.useState(null);
-    const [comments, setComments] = React.useState([]);
+    const [data, setData] = useState(null);
+    const [comments, setComments] = useState([]);
 
     const [name, setName] = useState('');
     const [comment, setComment] = useState('');
 
     const { axios } = useAppContext();
+
+    console.log(comments);
+
 
     useEffect(() => {
         async function fetchBlogData() {
@@ -37,16 +41,35 @@ const Blog = () => {
                     setName(response.data.author.name)
                 }
 
-
-
             } catch (e) {
-                console.error(e);
+                toast.error('Error fetching blog data', e.message);
             }
         }
 
         fetchBlogData();
 
     }, [blogId, axios]);
+
+    async function handleCommentSubmit(e) {
+        e.preventDefault();
+
+        const commentResponseData = {
+            comment,
+            isApproved: false,
+            author: name,
+        }
+
+        try {
+            const res = await axios.post(`api/posts/${blogId.id}/comments`, commentResponseData);
+            if (res.status === 201) {
+                setComments([...comments, commentResponseData]);
+                setComment('');
+                toast.success('Comment added successfully');
+            }
+        } catch {
+            toast.error('Failed to add comment');
+        }
+    }
 
     return (
         data ? (
@@ -58,7 +81,7 @@ const Blog = () => {
                 <div className='text-center mt-20 text-foreground'>
                     <p>Published on {data.date}</p>
                     <h1 className='text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-foreground'>{data.title}</h1>
-                    <h2 className='my-5 max-w-lg truncate mx-auto'>{data.subTitle}</h2>
+                    <h2 className='my-5 max-w-lg truncate mx-auto'>{data.subtitle}</h2>
                     <p className='inline-block py-1 px-4 rounded-full mb-6 border text-sm border-primary/35 bg-primary/5 font-medium text-primary'>{name}</p>
                 </div>
 
@@ -76,9 +99,9 @@ const Blog = () => {
                         <div className='flex flex-col gap-4'>
                             {comments.map((comment, index) => (
                                 <div key={index} className='relative bg-accent/10 shadow-accent shadow-2xl p-4 border border-primary/5 max-w-2xl rounded text-foreground'>
-                                    <div>
+                                    <div className='flex items-center gap-2 mb-2 text-primary'>
                                         <img src={assets.user_icon} className='w-6' />
-                                        <p className='font-medium'>{comment.name}</p>
+                                        <p className='font-medium'>{comment.author}</p>
                                     </div>
                                     <p>{comment.comment}</p>
                                     <span className='absolute right-4 bottom-3 flex items-center gap-2 text-xs'>{comment.createdAt}</span>
@@ -90,7 +113,7 @@ const Blog = () => {
                     <div className='max-w-3xl mx-auto'>
                         <p className='font-semibold mb-4'>Add you comment</p>
                         <form
-                            onSubmit={() => { }}
+                            onSubmit={(event) => handleCommentSubmit(event)}
                             className='flex flex-col items-start gap-4 max-w-lg'>
                             <input
                                 type="text"
